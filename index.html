@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ViralHook AI</title>
+<style>
+body {background:#0f0f0f;color:white;text-align:center;font-family:sans-serif;padding:40px;}
+input {padding:12px;width:300px;border-radius:8px;border:none;}
+button {padding:12px 20px;background:#ff0050;color:white;border:none;border-radius:8px;margin-top:10px;}
+pre {margin-top:20px;background:#1a1a1a;padding:15px;border-radius:10px;}
+</style>
+</head>
+<body>
+
+<h1>🔥 TikTok Viral Generator</h1>
+
+<input id="idea" placeholder="Enter video idea">
+<br>
+<button onclick="generate()">Generate</button>
+
+<pre id="output"></pre>
+
+<script>
+async function generate(){
+let idea=document.getElementById("idea").value;
+
+document.getElementById("output").innerText="Generating...";
+
+let res=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({idea})});
+let data=await res.json();
+
+document.getElementById("output").innerText=data.result;
+}
+</script>
+
+</body>
+</html>
