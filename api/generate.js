@@ -1,25 +1,40 @@
 export default function handler(req, res) {
-  const { idea } = req.body;
+  const { idea, tone } = req.body;
 
   if (!idea) {
     return res.status(400).json({ error: "No idea provided" });
   }
 
-  const titles = [
-    `You’re Making ${idea} WRONG 😳`,
-    `This ${idea} Trick Will Shock You 🤯`,
-    `Perfect ${idea} in 30 Seconds 🔥`
-  ];
+  const hooks = {
+    viral: [
+      `You’re Doing ${idea} WRONG 😳`,
+      `This ${idea} Trick Will Blow Your Mind 🤯`,
+      `Nobody Told You This About ${idea} 🔥`
+    ],
+    funny: [
+      `${idea} but it went wrong 😂`,
+      `This ${idea} is illegal 😭`,
+      `I tried ${idea} and regret it 💀`
+    ],
+    luxury: [
+      `Upgrade Your ${idea} Like a Pro ✨`,
+      `This ${idea} Feels Expensive 💎`,
+      `Premium ${idea} You Must Try 🔥`
+    ]
+  };
+
+  const selected = hooks[tone] || hooks["viral"];
+  const title = selected[Math.floor(Math.random() * selected.length)];
 
   const hashtags = [
-    "#viral",
-    "#tiktoktips",
     "#fyp",
-    "#trending",
-    "#contentcreator"
+    "#viral",
+    "#tiktokgrowth",
+    "#contentcreator",
+    "#trending"
   ];
 
-  res.status(200).json({
-    result: [...titles, ...hashtags].join("\n")
-  });
+  const result = `${title}\n\n${hashtags.join(" ")}`;
+
+  res.status(200).json({ result });
 }
