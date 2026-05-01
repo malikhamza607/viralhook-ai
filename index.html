@@ -15,45 +15,23 @@ body {
   align-items: center;
   height: 100vh;
 }
-
 .container {
   width: 90%;
   max-width: 400px;
   background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(15px);
   padding: 25px;
   border-radius: 20px;
   text-align: center;
 }
-
-h1 {
-  font-size: 22px;
-  background: linear-gradient(90deg,#ff0050,#00f2ea);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-textarea {
-  width: 100%;
-  height: 80px;
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  background: #1a1a1a;
-  color: white;
-}
-
-select {
+textarea, select {
   width: 100%;
   margin-top: 10px;
-  padding: 10px;
+  padding: 12px;
   border-radius: 10px;
+  border: none;
   background: #1a1a1a;
   color: white;
-  border: none;
 }
-
 button {
   width: 100%;
   padding: 14px;
@@ -63,9 +41,7 @@ button {
   background: linear-gradient(90deg,#ff0050,#00f2ea);
   color: white;
   font-weight: bold;
-  cursor: pointer;
 }
-
 .result {
   margin-top: 20px;
   background: #1a1a1a;
@@ -73,20 +49,13 @@ button {
   border-radius: 10px;
   white-space: pre-line;
 }
-
-.copy-btn {
-  margin-top: 10px;
-  background: #333;
-}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-
-<h1>🔥 ViralHook AI</h1>
-<p>Enter idea → get viral title + hashtags ⚡</p>
+<h2>🔥 ViralHook AI</h2>
 
 <textarea id="idea" placeholder="e.g cheese noodles"></textarea>
 
@@ -100,8 +69,7 @@ button {
 
 <div class="result" id="output"></div>
 
-<button class="copy-btn" onclick="copyText()">📋 Copy All</button>
-
+<button onclick="copyText()">📋 Copy All</button>
 </div>
 
 <script>
@@ -112,14 +80,14 @@ async function generate() {
   let tone = document.getElementById("tone").value;
 
   if (!idea) {
-    alert("Idea likho pehle!");
+    alert("Idea likho!");
     return;
   }
 
-  document.getElementById("output").innerText = "Generating... ⏳";
+  document.getElementById("output").innerText = "Generating...";
 
   try {
-    let res = await fetch("/api/generate", {
+    let res = await fetch(window.location.origin + "/api/generate", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ idea, tone })
@@ -127,28 +95,21 @@ async function generate() {
 
     let data = await res.json();
 
-    // 🔥 SAFE FIX (undefined avoid)
     if (!data.result) {
-      document.getElementById("output").innerText =
-        "Error aa raha hai backend se ❌";
+      document.getElementById("output").innerText = "Error aa gaya ❌";
       return;
     }
 
     lastResult = data.result;
     document.getElementById("output").innerText = lastResult;
 
-  } catch (err) {
-    document.getElementById("output").innerText =
-      "Server error ❌";
+  } catch (e) {
+    document.getElementById("output").innerText = "Server error ❌";
   }
 }
 
 function copyText() {
-  if (!lastResult) {
-    alert("Kuch generate karo pehle!");
-    return;
-  }
-
+  if (!lastResult) return alert("Pehle generate karo");
   navigator.clipboard.writeText(lastResult);
   alert("Copied!");
 }
