@@ -5,6 +5,22 @@ export default function handler(req, res) {
     return res.status(400).json({ error: "No idea provided" });
   }
 
+  const text = idea.toLowerCase();
+
+  // 🎯 Category detection
+  let category = "general";
+
+  if (text.includes("food") || text.includes("recipe") || text.includes("cook") || text.includes("noodle") || text.includes("egg")) {
+    category = "food";
+  } else if (text.includes("gym") || text.includes("fitness") || text.includes("workout")) {
+    category = "fitness";
+  } else if (text.includes("money") || text.includes("online") || text.includes("earn")) {
+    category = "money";
+  } else if (text.includes("tech") || text.includes("ai") || text.includes("mobile")) {
+    category = "tech";
+  }
+
+  // 🎭 Tone hooks
   const hooks = {
     viral: [
       `You’re Doing ${idea} WRONG 😳`,
@@ -26,13 +42,16 @@ export default function handler(req, res) {
   const selected = hooks[tone] || hooks["viral"];
   const title = selected[Math.floor(Math.random() * selected.length)];
 
-  const hashtags = [
-    "#fyp",
-    "#viral",
-    "#tiktokgrowth",
-    "#contentcreator",
-    "#trending"
-  ];
+  // 📊 Category-based hashtags
+  const hashtagMap = {
+    food: ["#foodtok", "#easyrecipes", "#cookinghack", "#quickmeals", "#foodviral"],
+    fitness: ["#gymtok", "#fitnessmotivation", "#workouttips", "#fitlife", "#fitnessviral"],
+    money: ["#makemoneyonline", "#sidehustle", "#moneytips", "#passiveincome", "#wealth"],
+    tech: ["#techtok", "#aitools", "#techhacks", "#digitalgrowth", "#innovation"],
+    general: ["#fyp", "#viralvideo", "#trendingnow", "#contentcreator", "#explorepage"]
+  };
+
+  const hashtags = hashtagMap[category];
 
   const result = `${title}\n\n${hashtags.join(" ")}`;
 
