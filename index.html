@@ -118,19 +118,37 @@ async function generate() {
 
   document.getElementById("output").innerText = "Generating... ⏳";
 
-  let res = await fetch("/api/generate", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ idea, tone })
-  });
+  try {
+    let res = await fetch("/api/generate", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ idea, tone })
+    });
 
-  let data = await res.json();
+    let data = await res.json();
 
-  lastResult = data.result;
-  document.getElementById("output").innerText = lastResult;
+    // 🔥 SAFE FIX (undefined avoid)
+    if (!data.result) {
+      document.getElementById("output").innerText =
+        "Error aa raha hai backend se ❌";
+      return;
+    }
+
+    lastResult = data.result;
+    document.getElementById("output").innerText = lastResult;
+
+  } catch (err) {
+    document.getElementById("output").innerText =
+      "Server error ❌";
+  }
 }
 
 function copyText() {
+  if (!lastResult) {
+    alert("Kuch generate karo pehle!");
+    return;
+  }
+
   navigator.clipboard.writeText(lastResult);
   alert("Copied!");
 }
