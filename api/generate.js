@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-    // Sirf POST requests allow karni hain
     if (req.method !== 'POST') {
       return res.status(405).json({ error: 'Method allow nahi hai' });
     }
@@ -9,16 +8,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Title likhna zaroori hai' });
     }
   
-    // Vercel se humari secret API key yahan ayegi
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return res.status(500).json({ error: 'API Key missing hai backend mein' });
     }
   
-    // Yahan maine model ka naam gemini-1.5-flash-latest kar diya hai
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+    // Sab se stable model 'gemini-pro' laga diya hai
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
   
-    // Humara fix system prompt
     const prompt = `Tum ek viral TikTok expert ho. Mera aam sa video title yeh hai: "${title}". Tumne mujhe sirf 1 highly engaging viral TikTok title aur exactly 5 trending hashtags dene hain. Uske ilawa koi extra baat ya introduction nahi likhna. Jawab exact is format mein do:\nTitle: [Viral Title]\nHashtags: [5 Hashtags]`;
   
     try {
@@ -32,12 +29,10 @@ export default async function handler(req, res) {
   
       const data = await response.json();
       
-      // Agar API se koi error aaye toh usko catch karna
       if (data.error) {
           return res.status(500).json({ error: data.error.message });
       }
 
-      // Agar candidate array mojood nahi hai
       if (!data.candidates || data.candidates.length === 0) {
           return res.status(500).json({ error: "Gemini ne koi jawab nahi diya."});
       }
