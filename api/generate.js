@@ -8,87 +8,120 @@ export default function handler(req, res) {
       return res.status(400).json({ error: 'Title is required' });
     }
 
-    // Title ki formatting
     const cleanTopic = title.trim();
     const formatTopic = cleanTopic.charAt(0).toUpperCase() + cleanTopic.slice(1);
-    const tagTopic = cleanTopic.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // Spaces aur special characters khatam
+    const tagTopic = cleanTopic.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    const lowerTopic = cleanTopic.toLowerCase();
   
-    // 💥 LAMBE AUR TRENDING VIRAL TITLES (Long Hooks)
-    const titleTemplates = [
-        "Stop scrolling! If you want to know the ultimate truth about {topic}, this video is exactly for you 🤯",
-        "I can't believe I am finally sharing my biggest secret regarding {topic} with you guys... 🤫",
-        "This is the only {topic} tutorial you will ever need to watch in 2024. Save this for later! 📌",
-        "Everyone is talking about this viral {topic} trend, so I decided to test it out myself! 🫣",
-        "Are you making these huge mistakes with {topic}? Watch this before it's too late! ❌",
-        "The crazy {topic} hack that professionals don't want you to know about 🕵️‍♂️",
-        "POV: You finally figured out how to master {topic} and it literally changed your life ✨",
-        "I tried the most viral {topic} method on TikTok and the results will actually shock you 😱",
-        "Do not even think about trying {topic} until you have watched this entire video 🛑",
-        "Top 3 things nobody ever tells you about {topic}. Number 2 is mind-blowing! 🤯",
-        "Why is nobody talking about this insane {topic} trick? I had to share this with you all 🔥",
-        "If you are struggling with {topic}, here is the ultimate cheat code you have been looking for 🎯",
-        "Exposing the reality behind the famous {topic} trend. Is it really worth the hype? 🤔",
-        "Here is a step-by-step guide on how to get the perfect {topic} every single time 📈",
-        "People are gatekeeping this {topic} secret, but I am going to reveal it right now 🔓",
-        "This {topic} hack feels illegal to know. Use it before it gets taken down! 🚨",
-        "Watch me transform my {topic} routine from basic to absolute perfection 💯",
-        "The algorithm brought you here for a reason. Here is the {topic} advice you needed today 🌟",
-        "I spent hours researching {topic} so you don't have to. Here is the summary 📚",
-        "If this video about {topic} is on your FYP, take it as a sign to start today! 🚀",
-        "The biggest lie you have been told about {topic}... Let me explain 🗣️",
-        "My highly requested {topic} routine is finally here! Don't forget to save it 🎬",
-        "I ranked every single {topic} method and the winner is definitely not what you expect 🏆",
-        "What happens when you mix {topic} with consistency? Pure magic. Watch this! ✨",
-        "This is your daily reminder to focus on {topic} if you want to see massive growth 🌱"
-    ];
-
-    // 💥 MASSIVE VIRAL HASHTAGS DATABASE
-    const viralTagsPool = [
-        "fyp", "foryou", "viral", "trending", "tiktok", "explore", "foryoupage", 
-        "viralvideo", "trend", "tiktokpakistan", "learning", "hack", "tips", 
-        "tricks", "daily", "vlog", "aesthetic", "wow", "omg", "mustwatch", 
-        "mindblown", "lifehack", "tutorial", "review", "amazing", "secret",
-        "tiktokhacks", "trendingnow", "fypシ", "viralpost", "grow", "success",
-        "goviral", "tiktoktrend", "unfreezemyacount", "100k", "views", "magic",
-        "storytime", "relatable", "funny", "entertainment", "knowledge", 
-        "hacks", "lifehacks", "tipsandtricks", "xyzbca", "parati", "pourtoi",
-        "viralhacks", "newtrend", "tiktokfamous", "learnontiktok", "edutok"
-    ];
-  
-    // 1. Ek lamba viral title select karna
-    const randomTemplate = titleTemplates[Math.floor(Math.random() * titleTemplates.length)];
-    const finalTitle = randomTemplate.replace(/\{topic\}/gi, formatTopic);
-
-    // 2. HASHTAGS LOGIC (2 Topic Related + 3 Viral)
+    // 💥 SMART CATEGORY DETECTION
+    let category = "general";
     
-    // --- Topic wale 2 tags banana ---
-    let topicTagsSet = new Set();
-    const topicSuffixes = ["", "viral", "trend", "hacks", "tips", "video", "tricks"];
-    
-    // Pehla tag sirf topic ka naam hoga (e.g., #cheesebiryani)
-    topicTagsSet.add("#" + tagTopic);
-    
-    // Doosra tag topic ke sath koi suffix mila kar (e.g., #cheesebiryaniviral)
-    while(topicTagsSet.size < 2) {
-        let randSuffix = topicSuffixes[Math.floor(Math.random() * topicSuffixes.length)];
-        let newTopicTag = "#" + tagTopic + randSuffix;
-        topicTagsSet.add(newTopicTag);
+    if (/(food|recipe|biryani|cook|kitchen|eat|burger|cake|pizza|meal|tasty|chai|karahi)/.test(lowerTopic)) {
+        category = "food";
+    } else if (/(app|mod|apk|android|tech|phone|mobile|setting|code|smali|webview|download|vpn)/.test(lowerTopic)) {
+        category = "tech";
+    } else if (/(ai|edit|video|cinematic|capcut|photo|prompt|upscale|background|logo|youtube)/.test(lowerTopic)) {
+        category = "editing";
+    } else if (/(dog|cat|animal|pet|puppy|kitten|bird|funny pet)/.test(lowerTopic)) {
+        category = "pets";
     }
 
-    // --- Viral 3 tags banana ---
+    // 💥 CATEGORY WISE DATABASE (Titles & Tags)
+    const databases = {
+        food: {
+            titles: [
+                "This {topic} recipe will literally make you drool 🤤",
+                "Secret restaurant-style {topic} recipe revealed! 🤫🍲",
+                "Stop buying {topic}, make it at home easily like this! 👨‍🍳",
+                "I tried making the viral {topic} and OMG... 😱",
+                "The only {topic} recipe you will ever need in your life 🥘",
+                "Rating this homemade {topic} a 100/10 💯",
+                "Quick and easy {topic} recipe for lazy days ⏳"
+            ],
+            tags: ["foodie", "tiktokfood", "recipe", "cooking", "foodtiktok", "easyrecipe", "delicious", "foodlover", "desifood", "kitchen"]
+        },
+        tech: {
+            titles: [
+                "Secret {topic} trick that feels illegal to know 🕵️‍♂️📱",
+                "The ultimate {topic} hack you have been searching for 🚀",
+                "Stop paying for apps! Here is the best {topic} method 🤫",
+                "How to unlock hidden features in {topic} easily 🔓",
+                "Top 3 {topic} tips that will change your mobile experience 🤯",
+                "Never do this mistake while using {topic} ❌",
+                "The ultimate guide to mastering {topic} on Android 📲"
+            ],
+            tags: ["techtok", "android", "techhacks", "mobile", "tech", "apk", "tipsandtricks", "androidtips", "secret", "mod"]
+        },
+        editing: {
+            titles: [
+                "How to get this cinematic {topic} effect in seconds 🎬",
+                "The secret to perfect {topic} that pro editors hide 🤫",
+                "Level up your videos with this {topic} trick ✨",
+                "I used AI for {topic} and the results are insane 🤯",
+                "Stop making this lighting mistake in your {topic} ❌",
+                "The ultimate {topic} prompt for insane visuals 🎨",
+                "Step-by-step tutorial for the viral {topic} trend 📈"
+            ],
+            tags: ["videoediting", "capcut", "editing", "ai", "cinematic", "tutorial", "editingskills", "filmmaking", "creator", "aivideo"]
+        },
+        pets: {
+            titles: [
+                "Wait for the end to see the cutest {topic} reaction 🥺❤️",
+                "POV: You own the most dramatic {topic} ever 😂",
+                "Things my {topic} does that actually make zero sense 🤷‍♂️",
+                "The ultimate {topic} care routine you need to see 🛁",
+                "Is this the smartest {topic} on TikTok? 🧠🐾",
+                "My {topic} trying to understand basic instructions 🐾😂",
+                "A day in the life of a very spoiled {topic} ✨"
+            ],
+            tags: ["petsoftiktok", "funnyanimals", "cutepet", "animallover", "pet", "dogsoftiktok", "catsoftiktok", "adorable", "pets", "furryfriend"]
+        },
+        general: {
+            titles: [
+                "Stop scrolling! If you want to know the ultimate truth about {topic}, watch this 🤯",
+                "I can't believe I am finally sharing my biggest {topic} secret with you guys... 🤫",
+                "This is the only {topic} guide you will ever need. Save this for later! 📌",
+                "Everyone is talking about this viral {topic} trend! 🫣",
+                "Are you making these huge mistakes with {topic}? Watch this! ❌",
+                "POV: You finally figured out how to master {topic} ✨",
+                "Do not even think about trying {topic} until you watch this 🛑"
+            ],
+            tags: ["fyp", "foryou", "viral", "trending", "tiktok", "explore", "foryoupage", "tiktokpakistan", "viralvideo", "trend"]
+        }
+    };
+
+    const selectedDB = databases[category];
+
+    // 1. Category ke hisaab se Title uthana
+    const randomTemplate = selectedDB.titles[Math.floor(Math.random() * selectedDB.titles.length)];
+    const finalTitle = randomTemplate.replace(/\{topic\}/gi, formatTopic);
+
+    // 2. HASHTAGS LOGIC (2 Topic Related + 3 Category Viral)
+    
+    let topicTagsSet = new Set();
+    const topicSuffixes = ["", "viral", "trend", "hacks", "video"];
+    
+    // Exact topic tag (e.g., #cheesebiryani)
+    topicTagsSet.add("#" + tagTopic);
+    
+    // Topic tag with random suffix (e.g., #cheesebiryanirecipe)
+    while(topicTagsSet.size < 2) {
+        // Agar food category hai toh "recipe" suffix add kare, warna generic suffix
+        let randSuffix = category === "food" ? "recipe" : topicSuffixes[Math.floor(Math.random() * topicSuffixes.length)];
+        topicTagsSet.add("#" + tagTopic + randSuffix);
+    }
+
     let viralTagsSet = new Set();
+    // 3 Category specific tags uthana (e.g., #foodie, #cooking)
     while(viralTagsSet.size < 3) {
-        let randViral = viralTagsPool[Math.floor(Math.random() * viralTagsPool.length)];
-        // Ensure karte hain ke topic wala tag mix na ho jaye
+        let randViral = selectedDB.tags[Math.floor(Math.random() * selectedDB.tags.length)];
         if (!topicTagsSet.has("#" + randViral)) {
             viralTagsSet.add("#" + randViral);
         }
     }
 
-    // Dono tags ko mila kar 5 tags ka text banana
     const finalHashtags = Array.from(topicTagsSet).join(" ") + " " + Array.from(viralTagsSet).join(" ");
   
-    // Browser ko result bhejna
     res.status(200).json({ 
         title: finalTitle, 
         hashtags: finalHashtags 
