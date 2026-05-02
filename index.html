@@ -2,108 +2,142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offline Viral Title Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pro TikTok Viral Generator</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px;}
-        .container { background: #1e1e1e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 100%; max-width: 500px; text-align: center; }
-        input { width: 100%; padding: 12px; margin-top: 15px; border: 1px solid #333; border-radius: 8px; background: #2a2a2a; color: white; box-sizing: border-box; outline: none; font-size: 16px;}
-        input:focus { border-color: #00f2fe; }
-        button { width: 100%; padding: 12px; margin-top: 20px; background: #00f2fe; color: black; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #00c0cb; }
-        .result { margin-top: 20px; text-align: left; background: #2a2a2a; padding: 15px; border-radius: 8px; display: none; white-space: pre-wrap; font-size: 14px; border-left: 4px solid #ff0050; max-height: 400px; overflow-y: auto; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); 
+            color: #fff; display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; padding: 20px; 
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+        }
+
+        h2 { font-weight: 800; font-size: 24px; margin-bottom: 5px; background: -webkit-linear-gradient(#00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { font-size: 13px; color: #b3b3b3; margin-bottom: 25px; }
+
+        input {
+            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2); color: #fff; font-size: 16px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); outline: none;
+            transition: 0.3s;
+        }
+        input:focus { box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(0, 242, 254, 0.5); }
+        input::placeholder { color: #888; }
+
+        button.generate-btn {
+            width: 100%; padding: 15px; margin-top: 20px; border: none; border-radius: 12px;
+            background: linear-gradient(45deg, #ff0050, #00f2fe);
+            color: white; font-size: 16px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 80, 0.4); transition: 0.3s transform;
+        }
+        button.generate-btn:active { transform: scale(0.95); }
+
+        .loader { display: none; margin-top: 20px; font-size: 14px; color: #00f2fe; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        .result-container {
+            display: none; margin-top: 25px; background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px; padding: 20px; text-align: left; position: relative;
+            border-left: 4px solid #ff0050;
+        }
+
+        .result-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;}
+        .result-tags { font-size: 14px; color: #00f2fe; }
+
+        .copy-btn {
+            width: 100%; margin-top: 15px; padding: 12px; border: 1px solid #00f2fe;
+            background: transparent; color: #00f2fe; border-radius: 10px;
+            font-weight: 600; cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .copy-btn:hover { background: rgba(0, 242, 254, 0.1); }
+        
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #4facfe; color: #fff; padding: 10px 20px; border-radius: 50px;
+            font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .toast.show { opacity: 1; bottom: 40px; }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>🚀 Offline Viral Generator</h2>
-    <p>Apna aam sa video topic yahan likhein:</p>
-    <input type="text" id="videoTitle" placeholder="E.g., Cheese Biryani">
-    <button onclick="generateContent()">100 Viral Kardo!</button>
+<div class="glass-card">
+    <h2>🚀 Viral Engine</h2>
+    <p>1 Title, 5 Hashtags. API ki zaroorat nahi!</p>
     
-    <div class="result" id="resultBox"></div>
+    <input type="text" id="videoTitle" placeholder="Apna topic yahan likhein...">
+    <button class="generate-btn" onclick="generateViral()">Magic Kardo! ✨</button>
+    
+    <div class="loader" id="loader">Data find kar raha hoon... 🔍</div>
+    
+    <div class="result-container" id="resultBox">
+        <div class="result-title" id="outTitle"></div>
+        <div class="result-tags" id="outTags"></div>
+        <button class="copy-btn" onclick="copyToClipboard()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy Text
+        </button>
+    </div>
 </div>
 
+<div class="toast" id="toast">Copied to clipboard! ✅</div>
+
 <script>
-    function generateContent() {
-        let topic = document.getElementById("videoTitle").value.trim();
-        const resultBox = document.getElementById("resultBox");
+    let finalCopyText = "";
 
-        if (!topic) {
-            alert("Bhai, pehle koi topic toh likho!");
-            return;
-        }
+    async function generateViral() {
+        const titleInput = document.getElementById("videoTitle").value.trim();
+        if (!titleInput) { alert("Pehle koi topic likhein!"); return; }
 
-        // Pehla harf bara (Capitalize) karne ke liye
-        topic = topic.charAt(0).toUpperCase() + topic.slice(1);
-        let noSpaceTopic = topic.replace(/\s+/g, '').toLowerCase();
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("resultBox").style.display = "none";
 
-        // Viral Templates
-        const templates = [
-            "POV: You just discovered {topic} 🤯",
-            "The ultimate truth about {topic} 🤫",
-            "Never do this with {topic} ❌",
-            "This {topic} hack will change your life 💡",
-            "Wait for it... {topic} 🔥",
-            "Why everyone is obsessed with {topic} 🤩",
-            "My secret {topic} trick 🤫",
-            "If you love {topic}, watch this 🛑",
-            "Part 1 | The {topic} journey 🚀",
-            "Did you know this about {topic}? 🤔",
-            "Rating {topic} out of 10 💯",
-            "Top 3 mistakes you make with {topic} ⚠️",
-            "The most aesthetic {topic} ✨",
-            "Unboxing/Reviewing {topic} 📦",
-            "How to get the best {topic} 🏆",
-            "{topic} tutorial for beginners 📚",
-            "I tried the viral {topic} trend 🫣",
-            "What they don't tell you about {topic} 🤫",
-            "Is {topic} really worth the hype? 🤷‍♂️",
-            "{topic} check! ✅"
-        ];
-
-        let finalTitles = "🔥 VIRAL TITLES:\n\n";
-        
-        // 100 Titles Generate karna
-        for (let i = 1; i <= 100; i++) {
-            // Random template uthana
-            let randomTemp = templates[Math.floor(Math.random() * templates.length)];
-            // Kabhi emoji add karna kabhi nahi, taake 100 unique lagain
-            let extraEmojis = [" 🔥", " ✨", " 💯", " 😱", " 🙌", " 🥺", " 🤌", " 🚀", " 🤯", ""];
-            let randomEmoji = extraEmojis[Math.floor(Math.random() * extraEmojis.length)];
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: titleInput })
+            });
+            const data = await response.json();
             
-            let titleText = randomTemp.replace(/\{topic\}/g, topic) + randomEmoji;
-            finalTitles += `${i}. ${titleText}\n`;
+            document.getElementById("outTitle").innerText = data.title;
+            document.getElementById("outTags").innerText = data.hashtags;
+            
+            // Copy karne ke liye text ready karna
+            finalCopyText = `${data.title}\n\n${data.hashtags}`;
+            
+            document.getElementById("resultBox").style.display = "block";
+        } catch (error) {
+            alert("Kuch masla ho gaya. Internet check karein.");
+        } finally {
+            document.getElementById("loader").style.display = "none";
         }
+    }
 
-        // Hashtags Generate karna
-        let finalHashtags = "\n\n🚀 TRENDING HASHTAGS:\n\n";
-        let baseHashtags = ["fyp", "foryou", "viral", "trending", "tiktok", "explore", "foryoupage", "viralvideo", "trend", "tiktokpakistan", "learning", "hack", "tips", "tricks", "daily", "vlog", "aesthetic", "wow", "omg", "mustwatch"];
-        
-        let generatedTags = new Set();
-        
-        // Topic se milte julte tags
-        generatedTags.add("#" + noSpaceTopic);
-        generatedTags.add("#" + noSpaceTopic + "viral");
-        generatedTags.add("#" + noSpaceTopic + "trend");
-        generatedTags.add("#" + noSpaceTopic + "hack");
-        generatedTags.add("#" + noSpaceTopic + "tips");
-
-        // 100 tags poore karne ke liye loop
-        let count = 1;
-        while (generatedTags.size < 100) {
-            let randomBase = baseHashtags[Math.floor(Math.random() * baseHashtags.length)];
-            let tag = `#${randomBase}${count}`; // Alag alag combinations banaye ga jaise #fyp1, #viral22 etc
-            generatedTags.add(tag);
-            count++;
-        }
-
-        finalHashtags += Array.from(generatedTags).join(" ");
-
-        // Screen par show karna
-        resultBox.innerText = finalTitles + finalHashtags;
-        resultBox.style.display = "block";
+    function copyToClipboard() {
+        navigator.clipboard.writeText(finalCopyText).then(() => {
+            const toast = document.getElementById("toast");
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 2000);
+        });
     }
 </script>
 
