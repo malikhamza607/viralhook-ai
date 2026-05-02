@@ -1,118 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ViralHook AI</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: -apple-system, sans-serif;
-  background: linear-gradient(135deg, #0f0f0f, #1c1c1c);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-.container {
-  width: 90%;
-  max-width: 400px;
-  background: rgba(255,255,255,0.05);
-  padding: 25px;
-  border-radius: 20px;
-  text-align: center;
-}
-textarea, select {
-  width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: #1a1a1a;
-  color: white;
-}
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 15px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg,#ff0050,#00f2ea);
-  color: white;
-  font-weight: bold;
-}
-.result {
-  margin-top: 20px;
-  background: #1a1a1a;
-  padding: 15px;
-  border-radius: 10px;
-  white-space: pre-line;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Viral Title Generator</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: #1e1e1e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 90%; max-width: 400px; text-align: center; }
+        input { width: 100%; padding: 12px; margin-top: 15px; border: 1px solid #333; border-radius: 8px; background: #2a2a2a; color: white; box-sizing: border-box; outline: none;}
+        input:focus { border-color: #ff0050; }
+        button { width: 100%; padding: 12px; margin-top: 20px; background: #ff0050; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #d40042; }
+        .result { margin-top: 20px; text-align: left; background: #2a2a2a; padding: 15px; border-radius: 8px; display: none; white-space: pre-wrap; font-size: 15px; border-left: 4px solid #00f2fe; }
+        .loader { display: none; margin-top: 15px; font-weight: bold; color: #00f2fe; }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
-<h2>🔥 ViralHook AI</h2>
-
-<textarea id="idea" placeholder="e.g cheese noodles"></textarea>
-
-<select id="tone">
-  <option value="viral">🔥 Viral</option>
-  <option value="funny">😂 Funny</option>
-  <option value="luxury">💎 Luxury</option>
-</select>
-
-<button onclick="generate()">⚡ Generate</button>
-
-<div class="result" id="output"></div>
-
-<button onclick="copyText()">📋 Copy All</button>
+    <h2>🚀 Viral Generator</h2>
+    <p>Apna aam sa video title yahan likhein:</p>
+    <input type="text" id="videoTitle" placeholder="E.g., main ne aaj biryani banai">
+    <button onclick="generateViralTitle()">Viral Kardo!</button>
+    
+    <div class="loader" id="loader">Soch raha hoon... ⏳</div>
+    <div class="result" id="resultBox"></div>
 </div>
 
 <script>
-let lastResult = "";
+    async function generateViralTitle() {
+        const titleInput = document.getElementById("videoTitle").value;
+        const resultBox = document.getElementById("resultBox");
+        const loader = document.getElementById("loader");
 
-async function generate() {
-  let idea = document.getElementById("idea").value;
-  let tone = document.getElementById("tone").value;
+        if (!titleInput) {
+            alert("Bhai, pehle koi title toh likho!");
+            return;
+        }
 
-  if (!idea) {
-    alert("Idea likho!");
-    return;
-  }
+        loader.style.display = "block";
+        resultBox.style.display = "none";
 
-  document.getElementById("output").innerText = "Generating...";
+        try {
+            // Yeh call Vercel ke backend api par jayegi
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: titleInput })
+            });
 
-  try {
-    let res = await fetch(window.location.origin + "/api/generate", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ idea, tone })
-    });
-
-    let data = await res.json();
-
-    if (!data.result) {
-      document.getElementById("output").innerText = "Error aa gaya ❌";
-      return;
+            const data = await response.json();
+            
+            if(data.result) {
+                resultBox.innerText = data.result;
+                resultBox.style.display = "block";
+            } else {
+                resultBox.innerText = "Error: " + (data.error || "Kuch masla ho gaya.");
+                resultBox.style.display = "block";
+            }
+        } catch (error) {
+            resultBox.innerText = "Network ka masla hai!";
+            resultBox.style.display = "block";
+        } finally {
+            loader.style.display = "none";
+        }
     }
-
-    lastResult = data.result;
-    document.getElementById("output").innerText = lastResult;
-
-  } catch (e) {
-    document.getElementById("output").innerText = "Server error ❌";
-  }
-}
-
-function copyText() {
-  if (!lastResult) return alert("Pehle generate karo");
-  navigator.clipboard.writeText(lastResult);
-  alert("Copied!");
-}
 </script>
 
 </body>
