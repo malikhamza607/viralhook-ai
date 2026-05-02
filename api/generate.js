@@ -13,8 +13,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'API Key missing hai backend mein' });
     }
   
-    // Yahan hum ne 'v1beta' ko hata kar official 'v1' laga diya hai aur model 'gemini-1.5-flash' kar diya hai
-    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    // Yahan hum ne sab se latest model 'gemini-2.0-flash' laga diya hai aur 'v1beta' use kiya hai
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
   
     const prompt = `Tum ek viral TikTok expert ho. Mera aam sa video title yeh hai: "${title}". Tumne mujhe sirf 1 highly engaging viral TikTok title aur exactly 5 trending hashtags dene hain. Uske ilawa koi extra baat ya introduction nahi likhna. Jawab exact is format mein do:\nTitle: [Viral Title]\nHashtags: [5 Hashtags]`;
   
