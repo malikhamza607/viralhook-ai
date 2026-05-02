@@ -3,67 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Viral Title Generator</title>
+    <title>Offline Viral Title Generator</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: #1e1e1e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 90%; max-width: 400px; text-align: center; }
-        input { width: 100%; padding: 12px; margin-top: 15px; border: 1px solid #333; border-radius: 8px; background: #2a2a2a; color: white; box-sizing: border-box; outline: none;}
-        input:focus { border-color: #ff0050; }
-        button { width: 100%; padding: 12px; margin-top: 20px; background: #ff0050; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #d40042; }
-        .result { margin-top: 20px; text-align: left; background: #2a2a2a; padding: 15px; border-radius: 8px; display: none; white-space: pre-wrap; font-size: 15px; border-left: 4px solid #00f2fe; }
-        .loader { display: none; margin-top: 15px; font-weight: bold; color: #00f2fe; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px;}
+        .container { background: #1e1e1e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 100%; max-width: 500px; text-align: center; }
+        input { width: 100%; padding: 12px; margin-top: 15px; border: 1px solid #333; border-radius: 8px; background: #2a2a2a; color: white; box-sizing: border-box; outline: none; font-size: 16px;}
+        input:focus { border-color: #00f2fe; }
+        button { width: 100%; padding: 12px; margin-top: 20px; background: #00f2fe; color: black; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #00c0cb; }
+        .result { margin-top: 20px; text-align: left; background: #2a2a2a; padding: 15px; border-radius: 8px; display: none; white-space: pre-wrap; font-size: 14px; border-left: 4px solid #ff0050; max-height: 400px; overflow-y: auto; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🚀 Viral Generator</h2>
-    <p>Apna aam sa video title yahan likhein:</p>
-    <input type="text" id="videoTitle" placeholder="E.g., main ne aaj biryani banai">
-    <button onclick="generateViralTitle()">Viral Kardo!</button>
+    <h2>🚀 Offline Viral Generator</h2>
+    <p>Apna aam sa video topic yahan likhein:</p>
+    <input type="text" id="videoTitle" placeholder="E.g., Cheese Biryani">
+    <button onclick="generateContent()">100 Viral Kardo!</button>
     
-    <div class="loader" id="loader">Soch raha hoon... ⏳</div>
     <div class="result" id="resultBox"></div>
 </div>
 
 <script>
-    async function generateViralTitle() {
-        const titleInput = document.getElementById("videoTitle").value;
+    function generateContent() {
+        let topic = document.getElementById("videoTitle").value.trim();
         const resultBox = document.getElementById("resultBox");
-        const loader = document.getElementById("loader");
 
-        if (!titleInput) {
-            alert("Bhai, pehle koi title toh likho!");
+        if (!topic) {
+            alert("Bhai, pehle koi topic toh likho!");
             return;
         }
 
-        loader.style.display = "block";
-        resultBox.style.display = "none";
+        // Pehla harf bara (Capitalize) karne ke liye
+        topic = topic.charAt(0).toUpperCase() + topic.slice(1);
+        let noSpaceTopic = topic.replace(/\s+/g, '').toLowerCase();
 
-        try {
-            // Yeh call Vercel ke backend api par jayegi
-            const response = await fetch('/api/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: titleInput })
-            });
+        // Viral Templates
+        const templates = [
+            "POV: You just discovered {topic} 🤯",
+            "The ultimate truth about {topic} 🤫",
+            "Never do this with {topic} ❌",
+            "This {topic} hack will change your life 💡",
+            "Wait for it... {topic} 🔥",
+            "Why everyone is obsessed with {topic} 🤩",
+            "My secret {topic} trick 🤫",
+            "If you love {topic}, watch this 🛑",
+            "Part 1 | The {topic} journey 🚀",
+            "Did you know this about {topic}? 🤔",
+            "Rating {topic} out of 10 💯",
+            "Top 3 mistakes you make with {topic} ⚠️",
+            "The most aesthetic {topic} ✨",
+            "Unboxing/Reviewing {topic} 📦",
+            "How to get the best {topic} 🏆",
+            "{topic} tutorial for beginners 📚",
+            "I tried the viral {topic} trend 🫣",
+            "What they don't tell you about {topic} 🤫",
+            "Is {topic} really worth the hype? 🤷‍♂️",
+            "{topic} check! ✅"
+        ];
 
-            const data = await response.json();
+        let finalTitles = "🔥 VIRAL TITLES:\n\n";
+        
+        // 100 Titles Generate karna
+        for (let i = 1; i <= 100; i++) {
+            // Random template uthana
+            let randomTemp = templates[Math.floor(Math.random() * templates.length)];
+            // Kabhi emoji add karna kabhi nahi, taake 100 unique lagain
+            let extraEmojis = [" 🔥", " ✨", " 💯", " 😱", " 🙌", " 🥺", " 🤌", " 🚀", " 🤯", ""];
+            let randomEmoji = extraEmojis[Math.floor(Math.random() * extraEmojis.length)];
             
-            if(data.result) {
-                resultBox.innerText = data.result;
-                resultBox.style.display = "block";
-            } else {
-                resultBox.innerText = "Error: " + (data.error || "Kuch masla ho gaya.");
-                resultBox.style.display = "block";
-            }
-        } catch (error) {
-            resultBox.innerText = "Network ka masla hai!";
-            resultBox.style.display = "block";
-        } finally {
-            loader.style.display = "none";
+            let titleText = randomTemp.replace(/\{topic\}/g, topic) + randomEmoji;
+            finalTitles += `${i}. ${titleText}\n`;
         }
+
+        // Hashtags Generate karna
+        let finalHashtags = "\n\n🚀 TRENDING HASHTAGS:\n\n";
+        let baseHashtags = ["fyp", "foryou", "viral", "trending", "tiktok", "explore", "foryoupage", "viralvideo", "trend", "tiktokpakistan", "learning", "hack", "tips", "tricks", "daily", "vlog", "aesthetic", "wow", "omg", "mustwatch"];
+        
+        let generatedTags = new Set();
+        
+        // Topic se milte julte tags
+        generatedTags.add("#" + noSpaceTopic);
+        generatedTags.add("#" + noSpaceTopic + "viral");
+        generatedTags.add("#" + noSpaceTopic + "trend");
+        generatedTags.add("#" + noSpaceTopic + "hack");
+        generatedTags.add("#" + noSpaceTopic + "tips");
+
+        // 100 tags poore karne ke liye loop
+        let count = 1;
+        while (generatedTags.size < 100) {
+            let randomBase = baseHashtags[Math.floor(Math.random() * baseHashtags.length)];
+            let tag = `#${randomBase}${count}`; // Alag alag combinations banaye ga jaise #fyp1, #viral22 etc
+            generatedTags.add(tag);
+            count++;
+        }
+
+        finalHashtags += Array.from(generatedTags).join(" ");
+
+        // Screen par show karna
+        resultBox.innerText = finalTitles + finalHashtags;
+        resultBox.style.display = "block";
     }
 </script>
 
