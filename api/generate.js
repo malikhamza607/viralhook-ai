@@ -84,7 +84,8 @@ export default function handler(req, res) {
                 "3 tips to make your {topic} perfectly every time 💡",
                 "Finally sharing my secret {topic} sauce recipe! 🍯"
             ],
-            tags: ["foodie", "tiktokfood", "recipe", "cooking", "foodtiktok", "easyrecipe", "delicious", "foodlover", "desifood", "kitchen", "asmrcooking", "streetfood", "homecooking", "lunchideas", "dinnerwithme", "foodtok", "quickrecipes", "pakistanifood", "indianfood", "healthyrecipes", "easycooking", "chefmode", "halalfood", "foodhacks", "viralfood"]
+            // 🌍 GLOBAL FOOD TAGS
+            tags: ["foodtok", "foodie", "tiktokfood", "recipe", "cooking", "easyrecipe", "delicious", "kitchen", "asmrcooking", "streetfood", "homecooking", "lunchideas", "dinnerwithme", "quickrecipes", "healthyrecipes", "chefmode", "foodhacks", "viralfood", "mukbang", "foodreview", "baking", "tasty"]
         },
         tech: {
             titles: [
@@ -96,7 +97,8 @@ export default function handler(req, res) {
                 "Never do this mistake while using {topic} ❌",
                 "The ultimate guide to mastering {topic} on Android 📲"
             ],
-            tags: ["techtok", "android", "techhacks", "mobile", "tech", "apk", "tipsandtricks", "androidtips", "secret", "mod"]
+            // 🌍 GLOBAL TECH TAGS
+            tags: ["techtok", "android", "techhacks", "mobile", "tech", "apk", "tipsandtricks", "androidtips", "secret", "mod", "technology", "gadgets", "appstoknow", "smartphone", "lifehack"]
         },
         editing: {
             titles: [
@@ -108,7 +110,8 @@ export default function handler(req, res) {
                 "The ultimate {topic} prompt for insane visuals 🎨",
                 "Step-by-step tutorial for the viral {topic} trend 📈"
             ],
-            tags: ["videoediting", "capcut", "editing", "ai", "cinematic", "tutorial", "editingskills", "filmmaking", "creator", "aivideo"]
+            // 🌍 GLOBAL EDITING TAGS
+            tags: ["videoediting", "capcut", "editing", "ai", "cinematic", "tutorial", "editingskills", "filmmaking", "creator", "aivideo", "vfx", "transition", "videography", "editingtutorial"]
         },
         pets: {
             titles: [
@@ -120,7 +123,8 @@ export default function handler(req, res) {
                 "My {topic} trying to understand basic instructions 🐾😂",
                 "A day in the life of a very spoiled {topic} ✨"
             ],
-            tags: ["petsoftiktok", "funnyanimals", "cutepet", "animallover", "pet", "dogsoftiktok", "catsoftiktok", "adorable", "pets", "furryfriend"]
+            // 🌍 GLOBAL PETS TAGS
+            tags: ["petsoftiktok", "funnyanimals", "cutepet", "animallover", "pet", "dogsoftiktok", "catsoftiktok", "adorable", "pets", "furryfriend", "petlover", "funnycat", "funnydog", "cuteanimals"]
         },
         general: {
             titles: [
@@ -132,26 +136,22 @@ export default function handler(req, res) {
                 "POV: You finally figured out how to master {topic} ✨",
                 "Do not even think about trying {topic} until you watch this 🛑"
             ],
-            tags: ["fyp", "foryou", "viral", "trending", "tiktok", "explore", "foryoupage", "tiktokpakistan", "viralvideo", "trend"]
+            // 🌍 MEGA GLOBAL VIRAL TAGS
+            tags: ["fyp", "foryou", "viral", "trending", "tiktok", "explore", "foryoupage", "viralvideo", "trend", "fypシ", "xyzbca", "foryourpage", "tiktoktrend", "viralpost"]
         }
     };
 
     const selectedDB = databases[category];
 
     // 💥 ANTI-REPEAT LOGIC
-    // Un titles ko filter karein jo abhi tak use nahi hue
     let availableTitles = selectedDB.titles.filter(t => !usedTitlesHistory.includes(t));
     
-    // Agar saary titles ek dafa show ho chuke hain, toh history clear kar dein aur dobara shuru karein
     if (availableTitles.length === 0) {
         usedTitlesHistory = [];
         availableTitles = selectedDB.titles;
     }
 
-    // Bachi hui list mein se random title uthayein
     const randomTemplate = availableTitles[Math.floor(Math.random() * availableTitles.length)];
-    
-    // Is title ko history mein save kar lein taake agli dafa ignore ho
     usedTitlesHistory.push(randomTemplate);
 
     const finalTitle = randomTemplate.replace(/\{topic\}/gi, formatTopic);
@@ -160,17 +160,17 @@ export default function handler(req, res) {
     let topicTagsSet = new Set();
     const topicSuffixes = ["", "viral", "trend", "hacks", "video"];
     
-    // Exact topic tag (e.g., #cheesebiryani)
+    // Exact topic tag
     topicTagsSet.add("#" + tagTopic);
     
-    // Topic tag with random suffix (e.g., #cheesebiryanirecipe)
+    // Topic tag with random suffix
     while(topicTagsSet.size < 2) {
         let randSuffix = category === "food" ? "recipe" : topicSuffixes[Math.floor(Math.random() * topicSuffixes.length)];
         topicTagsSet.add("#" + tagTopic + randSuffix);
     }
 
     let viralTagsSet = new Set();
-    // 3 Category specific tags uthana (e.g., #foodie, #cooking)
+    // 3 Global Category specific tags uthana
     while(viralTagsSet.size < 3) {
         let randViral = selectedDB.tags[Math.floor(Math.random() * selectedDB.tags.length)];
         if (!topicTagsSet.has("#" + randViral)) {
